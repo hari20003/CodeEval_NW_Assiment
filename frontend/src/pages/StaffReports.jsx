@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 // import "../App.css";
 
-// const API = process.env.REACT_APP_API_URL +"/api";
+const API = (process.env.REACT_APP_API_URL || "").replace(/\/$/, "") + "/api";
+
 
 export default function StaffReports() {
   const [results, setResults] = useState([]);
