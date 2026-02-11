@@ -1,0 +1,84 @@
+/* ===== DASHBOARD ===== */
+
+.dashboard-content {
+  position: relative;
+  z-index: 2;
+  padding: 30px;
+  color: white;
+  min-height: 100vh;
+  background: rgba(2,6,23,0.85);
+}
+
+.dash-grid {
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  grid-template-rows: auto auto auto;
+  gap: 25px;
+}
+
+/* cards */
+.dash-card {
+  background: linear-gradient(145deg, #020617, #0f172a);
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 0 25px rgba(37,99,235,0.15);
+  transition: 0.3s;
+}
+
+.dash-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 35px rgba(37,99,235,0.35);
+}
+
+/* layout positions */
+.user-card {
+  grid-column: 1 / 2;
+}
+
+.quote-card {
+  grid-column: 2 / 3;
+}
+
+.take-exam {
+  cursor: pointer;
+  border: 2px solid #2563eb;
+}
+
+.profile-card {
+  cursor: pointer;
+  border: 2px solid #16a34a;
+}
+
+.calendar-card {
+  grid-column: 2 / 3;
+  grid-row: 2 / 4;
+}
+
+/* buttons look */
+.action-card:hover {
+  background: linear-gradient(145deg, #020617, #1e293b);
+}
+
+/* calendar */
+.calendar-input {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background: #020617;
+  color: white;
+}
+
+/* responsive */
+@media (max-width: 900px) {
+  .dash-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .calendar-card {
+    grid-column: auto;
+    grid-row: auto;
+  }
+}

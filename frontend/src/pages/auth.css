@@ -1,0 +1,14 @@
+.reports-root {
+  min-height: 100vh;
+  background: #f4f7fb;
+  padding: 25px;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.reports-card {
+  background: white;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+}
