@@ -8,7 +8,8 @@ import logoImg from "../image/nw_logo.jpeg";
 import "../App.css";
 import warningSound from "../assets/warning.mp3";
 
-const API = "http://127.0.0.1:8000/api";
+const API = process.env.REACT_APP_API_URL + "/api";
+
 
 export default function Exam() {
   const navigate = useNavigate();
