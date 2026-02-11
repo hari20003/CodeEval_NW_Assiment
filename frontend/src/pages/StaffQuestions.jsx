@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../App.css";
 import "../pages/Staffqp.css";
 
-
-const API = "http://127.0.0.1:8000/api";
+const API = process.env.REACT_APP_API_URL +"/api";
 
 
 export default function StaffQuestions() {
