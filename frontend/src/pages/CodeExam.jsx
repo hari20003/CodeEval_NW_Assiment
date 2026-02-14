@@ -47,6 +47,19 @@ export default function Exam() {
 
   const q = questions[current - 1];
 
+  useEffect(() => {
+  const handleFullscreenChange = () => {
+    setIsFullscreen(!!document.fullscreenElement);
+  };
+
+  document.addEventListener("fullscreenchange", handleFullscreenChange);
+
+  return () => {
+    document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  };
+}, []);
+
+
   /* ================= WARNING SOUND ================= */
   useEffect(() => {
     audioRef.current = new Audio(warningSound);
@@ -104,6 +117,7 @@ export default function Exam() {
       }
     })();
   }, [navigate]);
+
 
   /* ================= AUTO ENTER FULLSCREEN WHEN EXAM STARTS =================
      NOTE: Browsers may block this unless there is a user gesture.
@@ -466,7 +480,10 @@ export default function Exam() {
         )}
 
         {/* Debug display (optional) */}
-        {/* <pre style={{ color: "#fff" }}>isFullscreen: {String(isFullscreen)}</pre> */}
+        <pre style={{ color: "#fff" }}>
+          Fullscreen: {String(isFullscreen)}
+        </pre>
+
       </div>
     </>
   );
