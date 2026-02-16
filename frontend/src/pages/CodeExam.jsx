@@ -233,7 +233,7 @@ export default function Exam() {
     }));
 
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/student/submit-exam`, {
+      await axios.post(`${API}/student/submit-exam`, {
         user_id: student.id,
         answers,
       });
@@ -266,7 +266,7 @@ export default function Exam() {
     setTcResult(null);
 
     try {
-      const res = await axios.post(`${process.env.REACT_APP_API_URL}/run`, {
+      const res = await axios.post(`${API}/run`, {
         language: "python",
         code: codes[current - 1],
         input,
