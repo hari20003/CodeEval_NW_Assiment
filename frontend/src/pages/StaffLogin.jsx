@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../App.css";
 
-const API = process.env.REACT_APP_API_URL +"api";
+const API = (process.env.REACT_APP_API_URL || "").replace(/\/$/, "") + "/api";
+
 
 export default function StaffLogin() {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ export default function StaffLogin() {
 
     try {
       setLoading(true);
-
+      
       const res = await axios.post(`${API}/staff/login`, {
         username,
         password
