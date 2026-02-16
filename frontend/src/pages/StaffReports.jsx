@@ -156,7 +156,7 @@ export default function StaffReports() {
                     <td>{r.reg_no}</td>
                     <td>{r.student_name}</td>
                     <td>
-                      {r.total_marks} / {r.max_marks}
+                     {r.obtained_marks} / {r.total_marks}
                     </td>
                     <td>
                       {r.submitted_at

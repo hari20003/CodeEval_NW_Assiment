@@ -1,28 +1,30 @@
-/* ================= STAFF QUESTION PAGE ================= */
+/* ================= STAFF QUESTION PAGE (LIGHT THEME) ================= */
+/* Matches StaffReports theme: white cards + blue primary */
 
 .dashboard-container {
   min-height: 100vh;
-  background: linear-gradient(120deg, #020617, #0f172a);
+  background: #f4f7fb;
   display: flex;
   justify-content: center;
   padding: 30px 14px;
-  font-family: "Inter", system-ui, sans-serif;
+  font-family: "Segoe UI", sans-serif;
 }
 
 .dashboard-card {
   width: 100%;
-  background: #020617;
-  border-radius: 18px;
-  padding: 24px;
-  box-shadow: 0 25px 60px rgba(0,0,0,0.55);
-  color: #e5e7eb;
+  max-width: 1100px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+  color: #111;
 }
 
 /* ---------- COMMON STAFF CARD ---------- */
 
 .staff-card {
-  background: #020617;
-  border: 1px solid rgba(148,163,184,0.12);
+  background: #fff;
+  border: 1px solid #e7ecf5;
   border-radius: 16px;
   padding: 18px;
   margin-top: 18px;
@@ -30,7 +32,8 @@
 
 .staff-card h3 {
   margin-bottom: 12px;
-  color: #38bdf8;
+  color: #0b5cff;
+  font-size: 18px;
 }
 
 /* ---------- FORM ---------- */
@@ -45,20 +48,23 @@
 .staff-form input,
 .staff-form textarea {
   width: 100%;
-  background: #020617;
-  border: 1px solid rgba(148,163,184,0.25);
+  background: #fafbff;
+  border: 1px solid #ddd;
   border-radius: 10px;
-  padding: 10px;
-  color: #e5e7eb;
-  font-size: 0.9rem;
+  padding: 12px 14px;
+  color: #111;
+  font-size: 14px;
   outline: none;
+  box-sizing: border-box;
+  transition: 0.2s;
 }
 
 .staff-form select:focus,
 .staff-form input:focus,
 .staff-form textarea:focus {
-  border-color: #38bdf8;
-  box-shadow: 0 0 0 1px #38bdf8;
+  border-color: #0b5cff;
+  background: #fff;
+  box-shadow: 0 0 0 2px rgba(11, 92, 255, 0.12);
 }
 
 .staff-full {
@@ -66,36 +72,38 @@
 }
 
 .staff-form textarea {
-  min-height: 100px;
+  min-height: 110px;
+  resize: vertical;
 }
 
 /* ---------- BUTTONS ---------- */
 
 .staff-btn {
   grid-column: span 2;
-  background: linear-gradient(135deg, #22d3ee, #3b82f6);
+  background: #0b5cff;
   border: none;
   padding: 12px;
-  border-radius: 12px;
-  font-weight: 600;
+  border-radius: 10px;
+  font-weight: 700;
   cursor: pointer;
-  color: #020617;
+  color: #fff;
   transition: 0.2s;
 }
 
 .staff-btn:hover {
+  opacity: 0.92;
   transform: translateY(-1px);
-  box-shadow: 0 10px 30px rgba(56,189,248,0.4);
 }
 
 /* ---------- TEST CASE DESIGNER ---------- */
 
 .staff-tc-box {
-  margin-top: 26px;
-  background: rgba(15,23,42,0.7);
-  border: 1px solid rgba(148,163,184,0.12);
-  border-radius: 18px;
-  padding: 20px;
+  margin-top: 22px;
+  background: #ffffff;
+  border: 1px solid #e7ecf5;
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.05);
 }
 
 .staff-tc-header {
@@ -105,38 +113,60 @@
   margin-bottom: 14px;
 }
 
-.staff-tc-count {
-  background: #020617;
-  border: 1px solid rgba(148,163,184,0.3);
-  padding: 4px 10px;
-  border-radius: 10px;
-  font-size: 0.8rem;
+.staff-tc-header h4 {
+  margin: 0;
+  color: #0b5cff;
 }
 
+.staff-tc-count {
+  background: #f5f8ff;
+  border: 1px solid #dce6ff;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0b5cff;
+}
+
+/* Add testcase form */
 .staff-tc-form {
   display: grid;
-  grid-template-columns: 1fr 1fr 120px auto;
+  grid-template-columns: 1fr 1fr 140px auto;
   gap: 10px;
   margin-bottom: 16px;
 }
 
 .staff-tc-form textarea,
 .staff-tc-form input {
-  background: #020617;
-  border: 1px solid rgba(148,163,184,0.25);
+  background: #fafbff;
+  border: 1px solid #ddd;
   border-radius: 10px;
-  padding: 8px;
-  color: #e5e7eb;
-  font-size: 0.85rem;
+  padding: 10px;
+  color: #111;
+  font-size: 13px;
+  outline: none;
+  resize: none;
+}
+
+.staff-tc-form textarea:focus,
+.staff-tc-form input:focus {
+  border-color: #0b5cff;
+  background: #fff;
+  box-shadow: 0 0 0 2px rgba(11, 92, 255, 0.12);
 }
 
 .staff-tc-form button {
-  background: #22c55e;
+  background: #0b5cff;
   border: none;
   border-radius: 10px;
-  padding: 8px 14px;
-  font-weight: 600;
+  padding: 10px 14px;
+  font-weight: 800;
   cursor: pointer;
+  color: #fff;
+}
+
+.staff-tc-form button:hover {
+  opacity: 0.92;
 }
 
 /* ---------- TEST CASE CARDS ---------- */
@@ -148,8 +178,8 @@
 }
 
 .staff-tc-card {
-  background: #020617;
-  border: 1px solid rgba(148,163,184,0.12);
+  background: #ffffff;
+  border: 1px solid #e7ecf5;
   border-radius: 14px;
   padding: 14px;
 }
@@ -158,26 +188,43 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 8px;
+  align-items: center;
 }
 
 .staff-tc-marks {
-  color: #22c55e;
-  font-size: 0.85rem;
+  background: #f5f8ff;
+  border: 1px solid #dce6ff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #0b5cff;
 }
 
 .staff-tc-content {
-  font-size: 0.8rem;
-  color: #cbd5f5;
+  font-size: 13px;
+  color: #333;
+}
+
+.staff-tc-content label {
+  font-size: 12px;
+  opacity: 0.7;
+  font-weight: 700;
 }
 
 .staff-tc-content pre {
-  background: #020617;
-  border: 1px solid rgba(148,163,184,0.15);
-  border-radius: 8px;
-  padding: 6px;
+  background: #f8fbff;
+  border: 1px solid #e7ecf5;
+  border-radius: 10px;
+  padding: 10px;
   white-space: pre-wrap;
-  margin-top: 4px;
+  margin-top: 6px;
+  max-height: 150px;
+  overflow: auto;
+  font-size: 12px;
 }
+
+/* ---------- ACTIONS ---------- */
 
 .staff-tc-actions {
   text-align: right;
@@ -185,12 +232,17 @@
 }
 
 .delete-btn {
-  background: #ef4444;
+  background: #ff4d4f;
   border: none;
   color: white;
-  padding: 6px 12px;
-  border-radius: 8px;
+  padding: 7px 14px;
+  border-radius: 10px;
   cursor: pointer;
+  font-weight: 700;
+}
+
+.delete-btn:hover {
+  opacity: 0.9;
 }
 
 /* ---------- MOBILE ---------- */
@@ -207,5 +259,8 @@
   .staff-tc-form {
     grid-template-columns: 1fr;
   }
-}
 
+  .dashboard-card {
+    padding: 18px;
+  }
+}
