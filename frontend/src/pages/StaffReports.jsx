@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import "../App.css";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 const API = (process.env.REACT_APP_API_URL || "").replace(/\/$/, "") + "/api";
-
 
 export default function StaffReports() {
   const [results, setResults] = useState([]);
@@ -17,6 +17,7 @@ export default function StaffReports() {
       return;
     }
     loadResults();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
   /* ================= LOAD ALL STUDENT RESULTS ================= */
@@ -31,9 +32,54 @@ export default function StaffReports() {
     }
   };
 
-  /* ================= DOWNLOAD ANSWER ================= */
+  /* ================= DOWNLOAD ANSWER TXT ================= */
   const downloadAnswerSheet = (id) => {
     window.open(`${API}/staff/download/${id}`, "_blank");
+  };
+
+  /* ================= DOWNLOAD EXCEL ================= */
+  const downloadExcel = () => {
+    if (!results || results.length === 0) {
+      alert("⚠ No submissions to export");
+      return;
+    }
+
+    const rows = results.map((r, idx) => ({
+      "S.No": idx + 1,
+      "Reg No": r.reg_no ?? "",
+      "Student Name": r.student_name ?? "",
+      "Total Marks": r.total_marks ?? "",
+      "Max Marks": r.max_marks ?? "",
+      "Submitted At": r.submitted_at
+        ? new Date(r.submitted_at).toLocaleString()
+        : "",
+      "Submission ID": r.id ?? "",
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(rows);
+
+    // Auto width
+    const colWidths = Object.keys(rows[0]).map((key) => ({
+      wch: Math.max(
+        key.length,
+        ...rows.map((row) => String(row[key] ?? "").length)
+      ) + 2,
+    }));
+    ws["!cols"] = colWidths;
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Student Reports");
+
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+
+    const filename = `student_reports_${new Date()
+      .toISOString()
+      .slice(0, 10)}.xlsx`;
+
+    saveAs(blob, filename);
   };
 
   /* ================= DELETE ================= */
@@ -62,22 +108,25 @@ export default function StaffReports() {
   return (
     <div className="reports-root">
       <div className="reports-card">
-
         {/* HEADER */}
         <div className="reports-header">
           <div>
             <h2>📊 Student Reports</h2>
-            <p className="reports-sub">
-              HumanXCode AI – Official Submissions
-            </p>
+            <p className="reports-sub">HumanXCode AI – Official Submissions</p>
           </div>
 
-          <button
-            className="back-btn"
-            onClick={() => navigate("/staff-dashboard")}
-          >
-            ⬅ Back
-          </button>
+          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+            <button className="download-btn" onClick={downloadExcel}>
+              ⬇ Excel
+            </button>
+
+            <button
+              className="back-btn"
+              onClick={() => navigate("/staff-dashboard")}
+            >
+              ⬅ Back
+            </button>
+          </div>
         </div>
 
         {/* TABLE */}
@@ -90,9 +139,6 @@ export default function StaffReports() {
                 <th>Total Answers</th>
                 <th>Submitted At</th>
                 <th>Answer Sheet</th>
-
-
-
                 <th>Action</th>
               </tr>
             </thead>
@@ -139,7 +185,6 @@ export default function StaffReports() {
             </tbody>
           </table>
         </div>
-
       </div>
     </div>
   );
