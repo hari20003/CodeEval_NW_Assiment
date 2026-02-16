@@ -27,6 +27,25 @@ def hash_password(password: str):
 
 def verify_password(password: str, hashed: str):
     return pwd_context.verify(password, hashed)
+app = FastAPI()
+
+# ================= CREATE DEFAULT STAFF =================
+@app.on_event("startup")
+def seed_staff():
+    db = SessionLocal()
+    try:
+        existing = db.query(Staff).filter(Staff.username == "admin").first()
+        if not existing:
+            s = Staff(
+                username="admin",
+                email="admin@humanxcode.com",
+                password=hash_password("admin123")
+            )
+            db.add(s)
+            db.commit()
+            print("✅ Default staff created")
+    finally:
+        db.close()
 
 # =====================================================
 # CORS
