@@ -137,6 +137,10 @@ def staff_login(data: dict, db: Session = Depends(get_db)):
             "email": staff.email
         }
     }
+@app.get("/debug/staff")
+def debug_staff(db: Session = Depends(get_db)):
+    staff_list = db.query(Staff).all()
+    return [{"id": s.id, "username": s.username, "email": s.email} for s in staff_list]
 
 # =====================================================
 # EXAM SETTINGS
