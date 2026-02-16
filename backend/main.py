@@ -44,7 +44,8 @@ app.add_middleware(
 # DB INIT
 # =====================================================
 
-Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine, checkfirst=True)
+
 
 def get_db():
     db = SessionLocal()
@@ -382,3 +383,33 @@ def get_student_testcases(qno: int, db: Session = Depends(get_db)):
         }
         for tc in tcs
     ]
+from models import Staff
+from database import SessionLocal
+
+@app.get("/create-staff")
+def create_staff():
+    db = SessionLocal()
+
+    USERNAME = "admin"
+    EMAIL = "admin@humanxcode.com"
+    PASSWORD = "admin123"
+
+    old = db.query(Staff).filter(Staff.username == USERNAME).first()
+    if old:
+        return {"message": "Staff already exists"}
+
+    staff = Staff(
+        username=USERNAME,
+        email=EMAIL,
+        password=hash_password(PASSWORD)
+    )
+
+    db.add(staff)
+    db.commit()
+    db.close()
+
+    return {
+        "message": "Staff created successfully",
+        "username": USERNAME,
+        "password": PASSWORD
+    }
