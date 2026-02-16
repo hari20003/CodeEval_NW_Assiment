@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import "../App.css";
 import "../pages/Staffqp.css";
 
-// const API = process.env.REACT_APP_API_URL +"/api";
 
+const API = (process.env.REACT_APP_API_URL || "").replace(/\/$/, "") + "/api";
 
 export default function StaffQuestions() {
   const navigate = useNavigate();
@@ -35,14 +35,14 @@ export default function StaffQuestions() {
 
   /* ================= LOAD EXAM SETTINGS ================= */
   const loadExamSettings = async () => {
-    const res = await fetch(`${process.env.REACT_APP_API_URL}/exam-settings`);
+    const res = await fetch(`${API}/exam-settings`);
     const data = await res.json();
     setIsOpen(Boolean(data.is_open));
     setDuration(data.duration || 30);
   };
 
   const saveExamSettings = async () => {
-    await fetch(`${process.env.REACT_APP_API_URL}/staff/exam-settings`, {
+    await fetch(`${API}/staff/exam-settings`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ is_open: isOpen, duration })
@@ -52,7 +52,7 @@ export default function StaffQuestions() {
 
   /* ================= LOAD QUESTION ================= */
   const loadQuestion = async (num) => {
-    const res = await fetch(`${process.env.REACT_APP_API_URL}/questions`);
+    const res = await fetch(`${API}/questions`);
     const data = await res.json();
     const q = data.find(q => q.qno === num);
 
@@ -73,7 +73,7 @@ export default function StaffQuestions() {
 
   /* ================= LOAD TEST CASES ================= */
   const loadTestcases = async (num) => {
-    const res = await fetch(`${process.env.REACT_APP_API_URL}/staff/testcases/${num}`);
+    const res = await fetch(`${API}/staff/testcases/${num}`);
     const data = await res.json();
     setTestcases(data || []);
   };
@@ -87,7 +87,7 @@ export default function StaffQuestions() {
   const submitQuestion = async () => {
     const htmlDesc = editorRef.current.innerHTML;
 
-    await fetch(`${process.env.REACT_APP_API_URL}/staff/set-question`, {
+    await fetch(`${API}/staff/set-question`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -107,7 +107,7 @@ export default function StaffQuestions() {
     if (!tcInput || !tcOutput) return alert("Enter input and expected output");
     if (testcases.length >= 4) return alert("⚠ Only 4 test cases allowed");
 
-    await fetch(`${process.env.REACT_APP_API_URL}/staff/testcases`, {
+    await fetch(`${API}/staff/testcases`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -125,7 +125,7 @@ export default function StaffQuestions() {
   };
 
   const deleteTestcase = async (id) => {
-    await fetch(`${process.env.REACT_APP_API_URL}/staff/testcases/${id}`, { method: "DELETE" });
+    await fetch(`${API}/staff/testcases/${id}`, { method: "DELETE" });
     loadTestcases(qno);
   };
 

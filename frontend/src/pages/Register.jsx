@@ -31,7 +31,7 @@ export default function Register() {
     try {
       setLoading(true);
 
-      await axios.post(`${process.env.REACT_APP_API_URL}/auth/register`, form);
+      await axios.post(`${API}/auth/register`, form);
 
       alert("✅ Registration successful. Please login.");
       navigate("/");

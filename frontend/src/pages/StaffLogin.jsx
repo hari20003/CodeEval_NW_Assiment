@@ -25,7 +25,7 @@ export default function StaffLogin() {
     try {
       setLoading(true);
 
-      const res = await axios.post(`${process.env.REACT_APP_API_URL}/staff/login`, {
+      const res = await axios.post(`${API}/staff/login`, {
         username,
         password
       });

@@ -22,7 +22,7 @@ export default function StaffReports() {
   /* ================= LOAD ALL STUDENT RESULTS ================= */
   const loadResults = async () => {
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/staff/results`);
+      const res = await fetch(`${API}/staff/results`);
       const data = await res.json();
       setResults(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -42,7 +42,7 @@ export default function StaffReports() {
       return;
 
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/staff/result/${id}`, {
+      const res = await fetch(`${API}/staff/result/${id}`, {
         method: "DELETE",
       });
 
