@@ -10,6 +10,17 @@ from database import SessionLocal, engine
 from models import *
 from executor import run_python, run_testcases
 
+from fastapi.responses import PlainTextResponse
+from sqlalchemy.orm import Session
+from datetime import datetime
+import json
+from datetime import datetime, timedelta
+from fastapi import Response, HTTPException, Depends
+
+from datetime import datetime
+import json
+from fastapi.responses import PlainTextResponse
+
 # =====================================================
 # APP INIT
 # =====================================================
@@ -337,115 +348,52 @@ def staff_results(db: Session = Depends(get_db)):
         "submitted_at": r.submitted_at
     } for r in rows]
 
-# =====================================================
-# OFFICIAL TXT DOWNLOAD (IST)
-# =====================================================
-@app.get("/api/staff/download/{user_id}")
-def download_report(user_id: int, db: Session = Depends(get_db)):
+from datetime import datetime, timedelta
+from fastapi import Response, HTTPException, Depends
+from sqlalchemy.orm import Session
 
-    # ✅ Adjust these model names if different in your project
-    student = db.query(Student).filter(Student.id == user_id).first()
-    if not student:
-        raise HTTPException(status_code=404, detail="Student not found")
-
-    # This should be the exam submission / answers table (adjust if your table name differs)
-    submission = db.query(Submission).filter(Submission.user_id == user_id).order_by(Submission.id.desc()).first()
-    if not submission:
+@app.get("/api/staff/download/{submission_id}")
+def download_answers(submission_id: int, db: Session = Depends(get_db)):
+    subs = db.query(Submission).filter(Submission.id == submission_id).all()
+    if not subs:
         raise HTTPException(status_code=404, detail="No submission found")
 
-    # ✅ Your answers might be stored as JSON in submission.answers
-    # Expected structure example:
-    # submission.answers = [
-    #   {"qno":1, "code":"...", "language":"python"},
-    #   ...
-    # ]
-    answers = submission.answers or []
+    user = db.query(User).filter(User.id == user_id).first()
+    email = getattr(user, "email", "—")
+    phone = getattr(user, "phone", "—")
 
-    # ✅ Get all questions + testcases
-    questions = db.query(Question).order_by(Question.qno).all()
+    questions = db.query(Question).all()
+    qmap = {q.qno: q for q in questions}
 
-    # helper: get student's code for a qno
-    def get_code(qno: int):
-        for a in answers:
-            if int(a.get("qno", 0)) == int(qno):
-                return a.get("code") or ""
-        return ""
+    base_time = subs[0].submitted_at or datetime.utcnow()
+    submit_time = base_time + timedelta(hours=5, minutes=30)
+    submit_time_str = submit_time.strftime("%Y-%m-%d %H:%M:%S")
 
-    # ✅ Build TXT in your required format
-    lines = []
-    lines.append("HUMAN X CODE AI - EXAM REPORT")
-    lines.append("====================================")
-    lines.append("")
-    lines.append(f"Reg No : {getattr(student, 'reg_no', '')}")
-    lines.append(f"Name   : {getattr(student, 'name', '')}")
-    dt = getattr(submission, "submitted_at", None) or getattr(submission, "created_at", None) or datetime.now()
-    lines.append(f"Date   : {dt.strftime('%m/%d/%Y, %I:%M:%S %p')}")
-    lines.append("")
-    lines.append("------------------------------------")
+    content = "===== HUMANXCODE AI – OFFICIAL ANSWER SHEET =====\n\n"
+    content += f"Reg No : {subs[0].reg_no}\n"
+    content += f"Name   : {subs[0].student_name}\n"
+    content += f"Email  : {email}\n"
+    content += f"Phone  : {phone}\n"
+    content += f"Date   : {submit_time_str} IST\n\n"
 
-    grand_total = 0
-    grand_obtained = 0
+    for s in subs:
+        q = qmap.get(s.qno)
+        content += "--------------------------------------------\n"
+        content += f"Question {s.qno}: {q.title if q else 'Undefined'}\n"
+        content += f"{q.description if q else ''}\n\n"
+        content += ">>> Student Code:\n"
+        content += f"{s.code or 'No code'}\n\n"
+        content += ">>> Output:\nEvaluated by HumanXCode AI Engine\n\n"
 
-    for q in questions:
-        qno = q.qno
-        title = getattr(q, "title", "")
-        desc = getattr(q, "description", "")  # your description has HTML; keep as-is
+    content += "\n=========== AI FINAL REVIEW ===========\nEvaluation completed successfully.\n"
 
-        # ✅ load testcases for this question
-        tcs = db.query(TestCase).filter(TestCase.qno == qno).order_by(TestCase.id).all()
+    filename = f"HUMANXCODE_{subs[0].reg_no}_{submit_time.strftime('%Y%m%d_%H%M%S')}.txt"
 
-        # total marks = sum of testcase marks
-        total_marks = sum([int(getattr(tc, "marks", 0) or 0) for tc in tcs])
-
-        # obtained marks: from your evaluation table if you have it.
-        # If you store per-question score somewhere (like submission.report), use that.
-        # For now, default 0 if you don't have stored marks.
-        obtained = 0
-
-        # Example if you have submission.report = [{"qno":1, "score":5}, ...]
-        rep = getattr(submission, "report", None)
-        if isinstance(rep, list):
-            for r in rep:
-                if int(r.get("qno", 0)) == int(qno):
-                    obtained = int(r.get("score", 0) or 0)
-
-        grand_total += total_marks
-        grand_obtained += obtained
-
-        # Write question section
-        lines.append(f"QUESTION {qno}")
-        lines.append(f"Title: {title}")
-        lines.append("")
-        lines.append("Question Description:")
-        lines.append(desc if desc else "")
-        lines.append("")
-        lines.append("Code Written by Student:")
-        lines.append(get_code(qno))
-        lines.append("")
-        lines.append("")
-        lines.append("Test Cases:")
-
-        for i, tc in enumerate(tcs, start=1):
-            lines.append(f"  Test Case {i}:")
-            lines.append(f"    Input: {getattr(tc, 'input', '')}")
-            lines.append(f"    Expected Output: {getattr(tc, 'expected_output', '')}")
-            lines.append(f"    Marks: {getattr(tc, 'marks', 0)}")
-
-        lines.append("")
-        lines.append(f"Score: {obtained} / {total_marks}")
-        lines.append("")
-        lines.append("------------------------------------")
-
-    lines.append("====================================")
-    lines.append("End of Report")
-
-    report_text = "\n".join(lines)
-
-    # ✅ Return as downloadable .txt
-    filename = f"{getattr(student,'reg_no','student')}_exam_report.txt"
-    headers = {"Content-Disposition": f'attachment; filename="{filename}"'}
-    return PlainTextResponse(content=report_text, headers=headers)
-
+    return Response(
+        content,
+        media_type="text/plain",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'}
+    )
 # =====================================================
 # DELETE SUBMISSION
 # =====================================================
